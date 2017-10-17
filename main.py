@@ -11,7 +11,7 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 def get_json(url):
-    page = urllib.request.urlopen(url)
+    page = urllib.request.urlopen(url).read().decode('UTF-8')
     return page
 
 
@@ -35,13 +35,12 @@ def get_ics(contests):
         event.add('dtend', dtend)
         cal.add_component(event)
     ret = cal.to_ical()
-    return ret.decode('utf8')
+    return ret
 
 
 def save_ics(filename, outputstring):
-    print(outputstring)
     filewrite = open(filename, 'w')
-    filewrite.write(outputstring)
+    filewrite.write(outputstring.decode('utf8'))
     filewrite.close()
 
 
@@ -49,6 +48,6 @@ if __name__ == '__main__':
     jsonurl = 'http://contests.acmicpc.info/contests.json'
     filename = 'contestscalendar.ics'
     calendar = get_json(jsonurl)
-    contests = json.load(calendar)
+    contests = json.loads(calendar)
     outputstring = get_ics(contests)
     save_ics(filename, outputstring)
